@@ -32,7 +32,9 @@ body {
     padding: 14px;
 }
 
-/* Header */
+/* =========================
+   HEADER
+========================= */
 
 .header {
     background: white;
@@ -54,7 +56,9 @@ body {
     font-size: 15px;
 }
 
-/* Card */
+/* =========================
+   CARD
+========================= */
 
 .card {
     background: white;
@@ -70,33 +74,59 @@ body {
     margin-bottom: 12px;
 }
 
-/* Mode */
+/* =========================
+   MODE
+========================= */
 
 .mode {
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .mode button {
     flex: 1;
-    height: 62px;
+    height: 68px;
     border: none;
-    border-radius: 15px;
-    font-size: 22px;
-    font-weight: bold;
+    border-radius: 16px;
+    font-size: 24px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.mode .active {
-    background: #222;
+/* OUT - Active */
+
+.mode .out-active {
+    background: #dc3545;
     color: white;
+    box-shadow: 0 5px 12px rgba(220, 53, 69, 0.30);
 }
+
+/* IN - Active */
+
+.mode .in-active {
+    background: #198754;
+    color: white;
+    box-shadow: 0 5px 12px rgba(25, 135, 84, 0.30);
+}
+
+/* Inactive */
 
 .mode .inactive {
-    background: #e5e7eb;
-    color: #555;
+    background: #e9ecef;
+    color: #6c757d;
+    box-shadow: none;
 }
 
-/* Camera */
+/* Button Press */
+
+.mode button:active {
+    transform: scale(0.97);
+}
+
+/* =========================
+   CAMERA
+========================= */
 
 #camera {
     width: 100%;
@@ -119,7 +149,9 @@ body {
     margin: 10px 0;
 }
 
-/* Buttons */
+/* =========================
+   BUTTONS
+========================= */
 
 .big-button {
     width: 100%;
@@ -130,13 +162,16 @@ body {
     color: white;
     font-size: 21px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .big-button:active {
     transform: scale(.98);
 }
 
-/* Inputs */
+/* =========================
+   INPUTS
+========================= */
 
 label {
     display: block;
@@ -171,7 +206,9 @@ select:focus {
     font-weight: bold;
 }
 
-/* Product */
+/* =========================
+   PRODUCT
+========================= */
 
 .product-box {
     background: #f5f6f8;
@@ -190,7 +227,9 @@ select:focus {
     margin-top: 5px;
 }
 
-/* Recommended */
+/* =========================
+   RECOMMENDED EXPIRY
+========================= */
 
 .recommended {
     margin-top: 12px;
@@ -212,7 +251,9 @@ select:focus {
     margin-top: 5px;
 }
 
-/* Submit */
+/* =========================
+   SUBMIT
+========================= */
 
 .submit {
     width: 100%;
@@ -223,6 +264,11 @@ select:focus {
     color: white;
     font-size: 24px;
     font-weight: bold;
+    cursor: pointer;
+}
+
+.submit:active {
+    transform: scale(.98);
 }
 
 .clear {
@@ -234,11 +280,20 @@ select:focus {
     background: white;
     font-size: 18px;
     font-weight: bold;
+    cursor: pointer;
+}
+
+.clear:active {
+    transform: scale(.98);
 }
 
 .hidden {
     display: none;
 }
+
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:380px) {
 
@@ -268,6 +323,10 @@ select:focus {
 <div class="container">
 
 
+    <!-- =========================
+         HEADER
+    ========================= -->
+
     <div class="header">
 
         <h1>📦 Inventory Scanner</h1>
@@ -277,7 +336,9 @@ select:focus {
     </div>
 
 
-    <!-- MODE -->
+    <!-- =========================
+         MODE
+    ========================= -->
 
     <div class="card">
 
@@ -289,7 +350,7 @@ select:focus {
 
             <button
                 id="outBtn"
-                class="active"
+                class="out-active"
                 onclick="selectMode('OUT')">
 
                 OUT
@@ -310,7 +371,9 @@ select:focus {
     </div>
 
 
-    <!-- SCANNER -->
+    <!-- =========================
+         SCANNER
+    ========================= -->
 
     <div class="card">
 
@@ -340,7 +403,9 @@ select:focus {
     </div>
 
 
-    <!-- PRODUCT -->
+    <!-- =========================
+         PRODUCT
+    ========================= -->
 
     <div class="card">
 
@@ -419,7 +484,9 @@ select:focus {
     </div>
 
 
-    <!-- QUANTITY -->
+    <!-- =========================
+         QUANTITY
+    ========================= -->
 
     <div class="card">
 
@@ -470,7 +537,9 @@ select:focus {
     </div>
 
 
-    <!-- EMPLOYEE -->
+    <!-- =========================
+         EMPLOYEE
+    ========================= -->
 
     <div class="card">
 
@@ -549,9 +618,11 @@ function selectMode(mode) {
     const inBtn =
         document.getElementById("inBtn");
 
+
     if (mode === "OUT") {
 
-        outBtn.className = "active";
+        outBtn.className = "out-active";
+
         inBtn.className = "inactive";
 
         document.getElementById("scanStatus")
@@ -560,10 +631,12 @@ function selectMode(mode) {
 
     }
 
+
     if (mode === "IN") {
 
         outBtn.className = "inactive";
-        inBtn.className = "active";
+
+        inBtn.className = "in-active";
 
         document.getElementById("scanStatus")
             .innerText =
