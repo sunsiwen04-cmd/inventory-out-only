@@ -1,1 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Inventory Scanner</title>
+
+<script src="https://unpkg.com/@ericblade/quagga2/dist/quagga.min.js"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f2f4f7;
+    color: #222;
+}
+
+.container {
+    width: 100%;
+    max-width: 520px;
+    margin: auto;
+    padding: 14px;
+}
+
+/* Header */
+
+.header {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 14px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 27px;
+}
+
+.header p {
+    margin: 6px 0 0;
+    color: #777;
+    font-size: 15px;
+}
+
+/* Card */
+
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.07);
+}
+
+.title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+/* Mode */
+
+.mode {
+    display: flex;
+    gap: 10px;
+}
+
+.mode button {
+    flex: 1;
+    height: 62px;
+    border: none;
+    border-radius: 15px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.mode .active {
+    background: #222;
+    color: white;
+}
+
+.mode .inactive {
+    background: #e5e7eb;
+    color: #555;
+}
+
+/* Camera */
+
+#camera {
+    width: 100%;
+    height: 270px;
+    background: #111;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+#camera video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scan-status {
+    text-align: center;
+    font-size: 15px;
+    color: #777;
+    margin: 10px 0;
+}
+
+/* Buttons */
+
+.big-button {
+    width: 100%;
+    height: 64px;
+    border: none;
+    border-radius: 15px;
+    background: #222;
+    color: white;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.big-button:active {
+    transform: scale(.98);
+}
+
+/* Inputs */
+
+label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+input,
+select {
+    width: 100%;
+    height: 60px;
+    border: 2px solid #d9dde3;
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 20px;
+    background: white;
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #555;
+}
+
+#barcode {
+    background: #f1f3f5;
+    font-weight: bold;
+}
+
+/* Product */
+
+.product-box {
+    background: #f5f6f8;
+    border-radius: 14px;
+    padding: 15px;
+}
+
+.product-label {
+    color: #777;
+    font-size: 14px;
+}
+
+.product-name {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Recommended */
+
+.recommended {
+    margin-top: 12px;
+    padding: 15px;
+    border-radius: 15px;
+    background: #fff8dc;
+    border: 2px solid #f0c94b;
+}
+
+.recommended-title {
+    color: #876800;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.recommended-date {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Submit */
+
+.submit {
+    width: 100%;
+    height: 72px;
+    border: none;
+    border-radius: 16px;
+    background: #198754;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.clear {
+    width: 100%;
+    height: 55px;
+    margin-top: 10px;
+    border-radius: 14px;
+    border: 2px solid #bbb;
+    background: white;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+@media(max-width:380px) {
+
+    .container {
+        padding: 10px;
+    }
+
+    #camera {
+        height: 230px;
+    }
+
+    input,
+    select {
+        height: 55px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>📦 Inventory Scanner</h1>
+
+        <p>Stock Movement System</p>
+
+    </div>
+
+
+    <!-- MODE -->
+
+    <div class="card">
+
+        <div class="title">
+            Mode
+        </div>
+
+        <div class="mode">
+
+            <button
+                id="outBtn"
+                class="active"
+                onclick="selectMode('OUT')">
+
+                OUT
+
+            </button>
+
+            <button
+                id="inBtn"
+                class="inactive"
+                onclick="selectMode('IN')">
+
+                IN
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SCANNER -->
+
+    <div class="card">
+
+        <div class="title">
+            📷 Scan Barcode
+        </div>
+
+        <div id="camera"></div>
+
+        <div
+            id="scanStatus"
+            class="scan-status">
+
+            Press START SCAN to begin
+
+        </div>
+
+        <button
+            id="scanButton"
+            class="big-button"
+            onclick="startScanner()">
+
+            📷 START SCAN
+
+        </button>
+
+    </div>
+
+
+    <!-- PRODUCT -->
+
+    <div class="card">
+
+        <div class="title">
+            Product Information
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Barcode</label>
+
+            <input
+                id="barcode"
+                placeholder="Scan barcode"
+                readonly>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Batch Number</label>
+
+            <input
+                id="batch"
+                placeholder="Enter Batch Number">
+
+        </div>
+
+
+        <button
+            class="big-button"
+            onclick="checkInventory()">
+
+            🔍 CHECK INVENTORY
+
+        </button>
+
+
+        <div
+            id="productBox"
+            class="product-box hidden">
+
+            <div class="product-label">
+                Product Name
+            </div>
+
+            <div
+                id="productName"
+                class="product-name">
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="recommendedBox"
+            class="recommended hidden">
+
+            <div class="recommended-title">
+
+                ⭐ RECOMMENDED EXPIRY DATE
+
+            </div>
+
+            <div
+                id="recommendedDate"
+                class="recommended-date">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUANTITY -->
+
+    <div class="card">
+
+        <div class="title">
+            Quantity
+        </div>
+
+
+        <div class="form-group">
+
+            <label>PIECES</label>
+
+            <input
+                id="pieces"
+                type="number"
+                min="0"
+                placeholder="Enter pieces">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>CTN</label>
+
+            <input
+                id="cartons"
+                type="number"
+                min="0"
+                placeholder="Enter cartons">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>QTY (KG)</label>
+
+            <input
+                id="qty"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Enter quantity">
+
+        </div>
+
+    </div>
+
+
+    <!-- EMPLOYEE -->
+
+    <div class="card">
+
+        <div class="title">
+            Written By
+        </div>
+
+
+        <select id="writer">
+
+            <option value="">
+                Select Employee
+            </option>
+
+            <option value="Yazhen">
+                Yazhen
+            </option>
+
+            <option value="JIANGHUA">
+                JIANGHUA
+            </option>
+
+            <option value="KM">
+                KM
+            </option>
+
+            <option value="KY">
+                KY
+            </option>
+
+            <option value="Kyaw">
+                Kyaw
+            </option>
+
+        </select>
+
+
+        <button
+            class="submit"
+            onclick="submitData()">
+
+            ✅ SUBMIT
+
+        </button>
+
+
+        <button
+            class="clear"
+            onclick="resetForm()">
+
+            CLEAR / NEW ENTRY
+
+        </button>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+/* =========================
+   MODE
+========================= */
+
+let currentMode = "OUT";
+
+function selectMode(mode) {
+
+    currentMode = mode;
+
+    const outBtn =
+        document.getElementById("outBtn");
+
+    const inBtn =
+        document.getElementById("inBtn");
+
+    if (mode === "OUT") {
+
+        outBtn.className = "active";
+        inBtn.className = "inactive";
+
+        document.getElementById("scanStatus")
+            .innerText =
+            "OUT mode selected";
+
+    }
+
+    if (mode === "IN") {
+
+        outBtn.className = "inactive";
+        inBtn.className = "active";
+
+        document.getElementById("scanStatus")
+            .innerText =
+            "IN function is under development";
+
+    }
+
+}
+
+
+/* =========================
+   SCANNER
+========================= */
+
+let scannerRunning = false;
+let scanned = false;
+
+function startScanner() {
+
+    if (currentMode === "IN") {
+
+        alert("IN function is under development.");
+
+        return;
+
+    }
+
+    if (scannerRunning) return;
+
+    scanned = false;
+    scannerRunning = true;
+
+    document.getElementById("scanStatus")
+        .innerText =
+        "📷 Scanning...";
+
+    document.getElementById("scanButton")
+        .innerText =
+        "🛑 SCANNING...";
+
+
+    Quagga.init({
+
+        inputStream: {
+
+            name: "Live",
+
+            type: "LiveStream",
+
+            target:
+                document.querySelector("#camera"),
+
+            constraints: {
+
+                facingMode: "environment",
+
+                width: {
+                    ideal: 1280
+                },
+
+                height: {
+                    ideal: 720
+                }
+
+            }
+
+        },
+
+        decoder: {
+
+            readers: [
+
+                "ean_reader",
+                "ean_8_reader",
+                "code_128_reader"
+
+            ]
+
+        },
+
+        locate: true
+
+    }, function(error) {
+
+        if (error) {
+
+            console.log(error);
+
+            scannerRunning = false;
+
+            document.getElementById("scanStatus")
+                .innerText =
+                "❌ Camera error";
+
+            document.getElementById("scanButton")
+                .innerText =
+                "📷 START SCAN";
+
+            return;
+
+        }
+
+        Quagga.start();
+
+    });
+
+}
+
+
+/* =========================
+   DETECT BARCODE
+========================= */
+
+Quagga.onDetected(function(data) {
+
+    if (!scannerRunning) return;
+
+    if (scanned) return;
+
+    const code =
+        data.codeResult.code;
+
+    if (!code) return;
+
+    scanned = true;
+
+    document.getElementById("barcode")
+        .value = code;
+
+    Quagga.stop();
+
+    scannerRunning = false;
+
+    document.getElementById("scanStatus")
+        .innerText =
+        "✅ Barcode scanned";
+
+    document.getElementById("scanButton")
+        .innerText =
+        "📷 START SCAN";
+
+    document.getElementById("batch")
+        .focus();
+
+});
+
+
+/* =========================
+   INVENTORY
+========================= */
+
+function checkInventory() {
+
+    alert(
+        "Cloudflare Inventory connection will be added next."
+    );
+
+}
+
+
+/* =========================
+   SUBMIT
+========================= */
+
+function submitData() {
+
+    alert(
+        "Cloudflare connection will be added next."
+    );
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetForm() {
+
+    document.getElementById("barcode")
+        .value = "";
+
+    document.getElementById("batch")
+        .value = "";
+
+    document.getElementById("pieces")
+        .value = "";
+
+    document.getElementById("cartons")
+        .value = "";
+
+    document.getElementById("qty")
+        .value = "";
+
+    document.getElementById("writer")
+        .value = "";
+
+    document.getElementById("productName")
+        .innerText = "";
+
+    document.getElementById("recommendedDate")
+        .innerText = "";
+
+    document.getElementById("productBox")
+        .classList.add("hidden");
+
+    document.getElementById("recommendedBox")
+        .classList.add("hidden");
+
+    document.getElementById("scanStatus")
+        .innerText =
+        "Press START SCAN to begin";
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+}
+
+</script>
+
+
+</body>
+
+</html>
