@@ -94,15 +94,11 @@ body {
     transition: all 0.2s ease;
 }
 
-/* OUT - Active */
-
 .mode .out-active {
     background: #dc3545;
     color: white;
     box-shadow: 0 5px 12px rgba(220, 53, 69, 0.30);
 }
-
-/* IN - Active */
 
 .mode .in-active {
     background: #198754;
@@ -110,15 +106,11 @@ body {
     box-shadow: 0 5px 12px rgba(25, 135, 84, 0.30);
 }
 
-/* Inactive */
-
 .mode .inactive {
     background: #e9ecef;
     color: #6c757d;
     box-shadow: none;
 }
-
-/* Button Press */
 
 .mode button:active {
     transform: scale(0.97);
@@ -228,27 +220,34 @@ select:focus {
 }
 
 /* =========================
-   RECOMMENDED EXPIRY
+   EXPIRY DATE
 ========================= */
 
-.recommended {
-    margin-top: 12px;
+.expiry-box {
+    margin-top: 14px;
     padding: 15px;
     border-radius: 15px;
     background: #fff8dc;
     border: 2px solid #f0c94b;
 }
 
-.recommended-title {
+.expiry-label {
     color: #876800;
     font-weight: bold;
     font-size: 15px;
+    margin-bottom: 8px;
 }
 
-.recommended-date {
-    font-size: 25px;
+#expiry {
+    background: #fffdf2;
+    border: 2px solid #f0c94b;
     font-weight: bold;
-    margin-top: 5px;
+    color: #5f4b00;
+    font-size: 21px;
+}
+
+#expiry:focus {
+    border-color: #d5aa00;
 }
 
 /* =========================
@@ -414,6 +413,8 @@ select:focus {
         </div>
 
 
+        <!-- Barcode -->
+
         <div class="form-group">
 
             <label>Barcode</label>
@@ -426,6 +427,8 @@ select:focus {
         </div>
 
 
+        <!-- Batch Number -->
+
         <div class="form-group">
 
             <label>Batch Number</label>
@@ -437,6 +440,8 @@ select:focus {
         </div>
 
 
+        <!-- Check Inventory -->
+
         <button
             class="big-button"
             onclick="checkInventory()">
@@ -445,6 +450,8 @@ select:focus {
 
         </button>
 
+
+        <!-- Product Name -->
 
         <div
             id="productBox"
@@ -463,21 +470,22 @@ select:focus {
         </div>
 
 
+        <!-- Recommended Expiry Date -->
+
         <div
             id="recommendedBox"
-            class="recommended hidden">
+            class="expiry-box hidden">
 
-            <div class="recommended-title">
+            <div class="expiry-label">
 
                 ⭐ RECOMMENDED EXPIRY DATE
 
             </div>
 
-            <div
-                id="recommendedDate"
-                class="recommended-date">
-
-            </div>
+            <input
+                type="date"
+                id="expiry"
+                readonly>
 
         </div>
 
@@ -495,6 +503,8 @@ select:focus {
         </div>
 
 
+        <!-- Pieces -->
+
         <div class="form-group">
 
             <label>PIECES</label>
@@ -508,6 +518,8 @@ select:focus {
         </div>
 
 
+        <!-- Cartons -->
+
         <div class="form-group">
 
             <label>CTN</label>
@@ -520,6 +532,8 @@ select:focus {
 
         </div>
 
+
+        <!-- KG -->
 
         <div class="form-group">
 
@@ -602,11 +616,13 @@ select:focus {
 
 <script>
 
+
 /* =========================
    MODE
 ========================= */
 
 let currentMode = "OUT";
+
 
 function selectMode(mode) {
 
@@ -652,26 +668,35 @@ function selectMode(mode) {
 ========================= */
 
 let scannerRunning = false;
+
 let scanned = false;
+
 
 function startScanner() {
 
     if (currentMode === "IN") {
 
-        alert("IN function is under development.");
+        alert(
+            "IN function is under development."
+        );
 
         return;
 
     }
 
+
     if (scannerRunning) return;
 
+
     scanned = false;
+
     scannerRunning = true;
+
 
     document.getElementById("scanStatus")
         .innerText =
         "📷 Scanning...";
+
 
     document.getElementById("scanButton")
         .innerText =
@@ -710,7 +735,9 @@ function startScanner() {
             readers: [
 
                 "ean_reader",
+
                 "ean_8_reader",
+
                 "code_128_reader"
 
             ]
@@ -721,23 +748,28 @@ function startScanner() {
 
     }, function(error) {
 
+
         if (error) {
 
             console.log(error);
 
             scannerRunning = false;
 
+
             document.getElementById("scanStatus")
                 .innerText =
                 "❌ Camera error";
+
 
             document.getElementById("scanButton")
                 .innerText =
                 "📷 START SCAN";
 
+
             return;
 
         }
+
 
         Quagga.start();
 
@@ -752,31 +784,42 @@ function startScanner() {
 
 Quagga.onDetected(function(data) {
 
+
     if (!scannerRunning) return;
 
+
     if (scanned) return;
+
 
     const code =
         data.codeResult.code;
 
+
     if (!code) return;
 
+
     scanned = true;
+
 
     document.getElementById("barcode")
         .value = code;
 
+
     Quagga.stop();
 
+
     scannerRunning = false;
+
 
     document.getElementById("scanStatus")
         .innerText =
         "✅ Barcode scanned";
 
+
     document.getElementById("scanButton")
         .innerText =
         "📷 START SCAN";
+
 
     document.getElementById("batch")
         .focus();
@@ -785,12 +828,60 @@ Quagga.onDetected(function(data) {
 
 
 /* =========================
-   INVENTORY
+   CHECK INVENTORY
 ========================= */
 
 function checkInventory() {
 
+    const barcode =
+        document.getElementById("barcode").value.trim();
+
+    const batch =
+        document.getElementById("batch").value.trim();
+
+
+    if (!barcode) {
+
+        alert(
+            "Please scan the barcode first."
+        );
+
+        return;
+
+    }
+
+
+    if (!batch) {
+
+        alert(
+            "Please enter the Batch Number."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       Cloudflare Inventory connection
+       will be added next.
+
+       The future logic will be:
+
+       Barcode + Batch Number
+              ↓
+       Search Inventory
+              ↓
+       Find all matching expiry dates
+              ↓
+       Select the earliest expiry date
+              ↓
+       Put the date into #expiry
+    */
+
+
     alert(
+        "Barcode and Batch Number received.\n\n" +
         "Cloudflare Inventory connection will be added next."
     );
 
@@ -816,39 +907,51 @@ function submitData() {
 
 function resetForm() {
 
+
     document.getElementById("barcode")
         .value = "";
+
 
     document.getElementById("batch")
         .value = "";
 
+
     document.getElementById("pieces")
         .value = "";
+
 
     document.getElementById("cartons")
         .value = "";
 
+
     document.getElementById("qty")
         .value = "";
+
 
     document.getElementById("writer")
         .value = "";
 
+
     document.getElementById("productName")
         .innerText = "";
 
-    document.getElementById("recommendedDate")
-        .innerText = "";
+
+    document.getElementById("expiry")
+        .value = "";
+
 
     document.getElementById("productBox")
         .classList.add("hidden");
 
+
     document.getElementById("recommendedBox")
         .classList.add("hidden");
+
 
     document.getElementById("scanStatus")
         .innerText =
         "Press START SCAN to begin";
+
 
     window.scrollTo({
 
