@@ -39,7 +39,7 @@ body {
 .header {
     background: white;
     border-radius: 18px;
-    padding: 18px;
+    padding: 20px;
     margin-bottom: 14px;
     text-align: center;
     box-shadow: 0 3px 12px rgba(0,0,0,.08);
@@ -91,20 +91,26 @@ body {
     font-size: 24px;
     font-weight: 800;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: .2s;
 }
+
+/* OUT */
 
 .mode .out-active {
     background: #dc3545;
     color: white;
-    box-shadow: 0 5px 12px rgba(220, 53, 69, 0.30);
+    box-shadow: 0 5px 12px rgba(220,53,69,.30);
 }
+
+/* IN */
 
 .mode .in-active {
     background: #198754;
     color: white;
-    box-shadow: 0 5px 12px rgba(25, 135, 84, 0.30);
+    box-shadow: 0 5px 12px rgba(25,135,84,.30);
 }
+
+/* INACTIVE */
 
 .mode .inactive {
     background: #e9ecef;
@@ -113,7 +119,7 @@ body {
 }
 
 .mode button:active {
-    transform: scale(0.97);
+    transform: scale(.97);
 }
 
 /* =========================
@@ -150,7 +156,7 @@ body {
     height: 64px;
     border: none;
     border-radius: 15px;
-    background: #222;
+    background: #2563eb;
     color: white;
     font-size: 21px;
     font-weight: bold;
@@ -162,7 +168,7 @@ body {
 }
 
 /* =========================
-   INPUTS
+   INPUT
 ========================= */
 
 label {
@@ -190,7 +196,7 @@ select {
 
 input:focus,
 select:focus {
-    border-color: #555;
+    border-color: #2563eb;
 }
 
 #barcode {
@@ -199,10 +205,34 @@ select:focus {
 }
 
 /* =========================
+   EXPIRY DATE
+========================= */
+
+.expiry-box {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 15px;
+    background: #fff8dc;
+    border: 2px solid #f0c94b;
+}
+
+.expiry-box label {
+    color: #765d00;
+}
+
+#expiry {
+    background: #fffdf0;
+    border: 2px solid #e5bd25;
+    font-weight: bold;
+    color: #6b5500;
+}
+
+/* =========================
    PRODUCT
 ========================= */
 
 .product-box {
+    margin-top: 15px;
     background: #f5f6f8;
     border-radius: 14px;
     padding: 15px;
@@ -220,34 +250,28 @@ select:focus {
 }
 
 /* =========================
-   EXPIRY DATE
+   MESSAGE
 ========================= */
 
-.expiry-box {
-    margin-top: 14px;
-    padding: 15px;
-    border-radius: 15px;
-    background: #fff8dc;
-    border: 2px solid #f0c94b;
-}
-
-.expiry-label {
-    color: #876800;
-    font-weight: bold;
+.message {
+    margin-top: 12px;
+    padding: 13px;
+    border-radius: 12px;
     font-size: 15px;
-    margin-bottom: 8px;
-}
-
-#expiry {
-    background: #fffdf2;
-    border: 2px solid #f0c94b;
     font-weight: bold;
-    color: #5f4b00;
-    font-size: 21px;
+    display: none;
 }
 
-#expiry:focus {
-    border-color: #d5aa00;
+.message.success {
+    display: block;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.message.error {
+    display: block;
+    background: #f8d7da;
+    color: #842029;
 }
 
 /* =========================
@@ -257,6 +281,7 @@ select:focus {
 .submit {
     width: 100%;
     height: 72px;
+    margin-top: 15px;
     border: none;
     border-radius: 16px;
     background: #198754;
@@ -285,6 +310,19 @@ select:focus {
 .clear:active {
     transform: scale(.98);
 }
+
+/* =========================
+   LOADING
+========================= */
+
+.loading {
+    opacity: .6;
+    pointer-events: none;
+}
+
+/* =========================
+   HIDDEN
+========================= */
 
 .hidden {
     display: none;
@@ -322,9 +360,7 @@ select:focus {
 <div class="container">
 
 
-    <!-- =========================
-         HEADER
-    ========================= -->
+    <!-- HEADER -->
 
     <div class="header">
 
@@ -335,9 +371,7 @@ select:focus {
     </div>
 
 
-    <!-- =========================
-         MODE
-    ========================= -->
+    <!-- MODE -->
 
     <div class="card">
 
@@ -370,9 +404,7 @@ select:focus {
     </div>
 
 
-    <!-- =========================
-         SCANNER
-    ========================= -->
+    <!-- SCANNER -->
 
     <div class="card">
 
@@ -402,9 +434,7 @@ select:focus {
     </div>
 
 
-    <!-- =========================
-         PRODUCT
-    ========================= -->
+    <!-- PRODUCT -->
 
     <div class="card">
 
@@ -413,11 +443,13 @@ select:focus {
         </div>
 
 
-        <!-- Barcode -->
+        <!-- BARCODE -->
 
         <div class="form-group">
 
-            <label>Barcode</label>
+            <label>
+                Barcode
+            </label>
 
             <input
                 id="barcode"
@@ -427,11 +459,13 @@ select:focus {
         </div>
 
 
-        <!-- Batch Number -->
+        <!-- BATCH -->
 
         <div class="form-group">
 
-            <label>Batch Number</label>
+            <label>
+                Batch Number
+            </label>
 
             <input
                 id="batch"
@@ -440,9 +474,10 @@ select:focus {
         </div>
 
 
-        <!-- Check Inventory -->
+        <!-- CHECK -->
 
         <button
+            id="checkButton"
             class="big-button"
             onclick="checkInventory()">
 
@@ -451,7 +486,7 @@ select:focus {
         </button>
 
 
-        <!-- Product Name -->
+        <!-- PRODUCT -->
 
         <div
             id="productBox"
@@ -470,31 +505,36 @@ select:focus {
         </div>
 
 
-        <!-- Recommended Expiry Date -->
+        <!-- EXPIRY -->
 
         <div
-            id="recommendedBox"
+            id="expiryBox"
             class="expiry-box hidden">
 
-            <div class="expiry-label">
-
+            <label>
                 ⭐ RECOMMENDED EXPIRY DATE
-
-            </div>
+            </label>
 
             <input
-                type="date"
                 id="expiry"
+                type="date"
                 readonly>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="message"
+            class="message">
 
         </div>
 
     </div>
 
 
-    <!-- =========================
-         QUANTITY
-    ========================= -->
+    <!-- QUANTITY -->
 
     <div class="card">
 
@@ -503,11 +543,11 @@ select:focus {
         </div>
 
 
-        <!-- Pieces -->
-
         <div class="form-group">
 
-            <label>PIECES</label>
+            <label>
+                PIECES
+            </label>
 
             <input
                 id="pieces"
@@ -518,11 +558,11 @@ select:focus {
         </div>
 
 
-        <!-- Cartons -->
-
         <div class="form-group">
 
-            <label>CTN</label>
+            <label>
+                CTN
+            </label>
 
             <input
                 id="cartons"
@@ -533,11 +573,11 @@ select:focus {
         </div>
 
 
-        <!-- KG -->
-
         <div class="form-group">
 
-            <label>QTY (KG)</label>
+            <label>
+                QTY (KG)
+            </label>
 
             <input
                 id="qty"
@@ -551,9 +591,7 @@ select:focus {
     </div>
 
 
-    <!-- =========================
-         EMPLOYEE
-    ========================= -->
+    <!-- EMPLOYEE -->
 
     <div class="card">
 
@@ -592,6 +630,7 @@ select:focus {
 
 
         <button
+            id="submitButton"
             class="submit"
             onclick="submitData()">
 
@@ -616,10 +655,17 @@ select:focus {
 
 <script>
 
+/* =====================================================
+   GOOGLE APPS SCRIPT URL
+===================================================== */
 
-/* =========================
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbwIZPycwnqobCtomUM4o96ver3ghIs-GqRRtfBMthUGws0IG4207coaT3APhsoYpwda/exec";
+
+
+/* =====================================================
    MODE
-========================= */
+===================================================== */
 
 let currentMode = "OUT";
 
@@ -637,12 +683,15 @@ function selectMode(mode) {
 
     if (mode === "OUT") {
 
-        outBtn.className = "out-active";
+        outBtn.className =
+            "out-active";
 
-        inBtn.className = "inactive";
+        inBtn.className =
+            "inactive";
 
-        document.getElementById("scanStatus")
-            .innerText =
+        document.getElementById(
+            "scanStatus"
+        ).innerText =
             "OUT mode selected";
 
     }
@@ -650,12 +699,15 @@ function selectMode(mode) {
 
     if (mode === "IN") {
 
-        outBtn.className = "inactive";
+        outBtn.className =
+            "inactive";
 
-        inBtn.className = "in-active";
+        inBtn.className =
+            "in-active";
 
-        document.getElementById("scanStatus")
-            .innerText =
+        document.getElementById(
+            "scanStatus"
+        ).innerText =
             "IN function is under development";
 
     }
@@ -663,9 +715,9 @@ function selectMode(mode) {
 }
 
 
-/* =========================
+/* =====================================================
    SCANNER
-========================= */
+===================================================== */
 
 let scannerRunning = false;
 
@@ -685,7 +737,11 @@ function startScanner() {
     }
 
 
-    if (scannerRunning) return;
+    if (scannerRunning) {
+
+        return;
+
+    }
 
 
     scanned = false;
@@ -693,13 +749,15 @@ function startScanner() {
     scannerRunning = true;
 
 
-    document.getElementById("scanStatus")
-        .innerText =
+    document.getElementById(
+        "scanStatus"
+    ).innerText =
         "📷 Scanning...";
 
 
-    document.getElementById("scanButton")
-        .innerText =
+    document.getElementById(
+        "scanButton"
+    ).innerText =
         "🛑 SCANNING...";
 
 
@@ -712,18 +770,25 @@ function startScanner() {
             type: "LiveStream",
 
             target:
-                document.querySelector("#camera"),
+                document.querySelector(
+                    "#camera"
+                ),
 
             constraints: {
 
-                facingMode: "environment",
+                facingMode:
+                    "environment",
 
                 width: {
+
                     ideal: 1280
+
                 },
 
                 height: {
+
                     ideal: 720
+
                 }
 
             }
@@ -756,13 +821,15 @@ function startScanner() {
             scannerRunning = false;
 
 
-            document.getElementById("scanStatus")
-                .innerText =
+            document.getElementById(
+                "scanStatus"
+            ).innerText =
                 "❌ Camera error";
 
 
-            document.getElementById("scanButton")
-                .innerText =
+            document.getElementById(
+                "scanButton"
+            ).innerText =
                 "📷 START SCAN";
 
 
@@ -778,72 +845,339 @@ function startScanner() {
 }
 
 
-/* =========================
+/* =====================================================
    DETECT BARCODE
-========================= */
+===================================================== */
 
-Quagga.onDetected(function(data) {
+Quagga.onDetected(
+    function(data) {
 
+        if (!scannerRunning) {
 
-    if (!scannerRunning) return;
+            return;
 
-
-    if (scanned) return;
-
-
-    const code =
-        data.codeResult.code;
+        }
 
 
-    if (!code) return;
+        if (scanned) {
+
+            return;
+
+        }
 
 
-    scanned = true;
+        const code =
+            data.codeResult.code;
 
 
-    document.getElementById("barcode")
-        .value = code;
+        if (!code) {
+
+            return;
+
+        }
 
 
-    Quagga.stop();
+        scanned = true;
 
 
-    scannerRunning = false;
+        document.getElementById(
+            "barcode"
+        ).value = code;
 
 
-    document.getElementById("scanStatus")
-        .innerText =
-        "✅ Barcode scanned";
+        Quagga.stop();
 
 
-    document.getElementById("scanButton")
-        .innerText =
-        "📷 START SCAN";
+        scannerRunning = false;
 
 
-    document.getElementById("batch")
-        .focus();
+        document.getElementById(
+            "scanStatus"
+        ).innerText =
+            "✅ Barcode scanned";
 
-});
+
+        document.getElementById(
+            "scanButton"
+        ).innerText =
+            "📷 START SCAN";
 
 
-/* =========================
+        document.getElementById(
+            "batch"
+        ).focus();
+
+    }
+);
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(
+    text,
+    type
+) {
+
+    const message =
+        document.getElementById(
+            "message"
+        );
+
+
+    message.innerText = text;
+
+    message.className =
+        "message " + type;
+
+}
+
+
+/* =====================================================
    CHECK INVENTORY
-========================= */
+===================================================== */
 
-function checkInventory() {
+async function checkInventory() {
 
     const barcode =
-        document.getElementById("barcode").value.trim();
+        document.getElementById(
+            "barcode"
+        ).value.trim();
+
 
     const batch =
-        document.getElementById("batch").value.trim();
+        document.getElementById(
+            "batch"
+        ).value.trim();
+
+
+    if (!barcode) {
+
+        showMessage(
+            "Please scan the barcode first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!batch) {
+
+        showMessage(
+            "Please enter Batch Number.",
+            "error"
+        );
+
+        document.getElementById(
+            "batch"
+        ).focus();
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "checkButton"
+        );
+
+
+    button.innerText =
+        "⏳ CHECKING...";
+
+    button.classList.add(
+        "loading"
+    );
+
+
+    showMessage(
+        "Checking inventory...",
+        "success"
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                SCRIPT_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            action:
+                                "checkInventory",
+
+                            barcode:
+                                barcode,
+
+                            batch:
+                                batch
+
+                        })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!result.success) {
+
+            document.getElementById(
+                "productBox"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            document.getElementById(
+                "expiryBox"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            showMessage(
+                "❌ " +
+                result.message,
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        /* PRODUCT */
+
+        document.getElementById(
+            "productName"
+        ).innerText =
+            result.productName ||
+            "Product found";
+
+
+        document.getElementById(
+            "productBox"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        /* EXPIRY */
+
+        document.getElementById(
+            "expiry"
+        ).value =
+            result.expiryDate;
+
+
+        document.getElementById(
+            "expiryBox"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        showMessage(
+            "✅ Inventory found. Earliest expiry date selected.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+            "❌ Unable to connect to inventory.",
+            "error"
+        );
+
+    }
+
+
+    button.innerText =
+        "🔍 CHECK INVENTORY";
+
+    button.classList.remove(
+        "loading"
+    );
+
+}
+
+
+/* =====================================================
+   SUBMIT
+===================================================== */
+
+async function submitData() {
+
+    const barcode =
+        document.getElementById(
+            "barcode"
+        ).value.trim();
+
+
+    const batch =
+        document.getElementById(
+            "batch"
+        ).value.trim();
+
+
+    const expiry =
+        document.getElementById(
+            "expiry"
+        ).value.trim();
+
+
+    const pieces =
+        document.getElementById(
+            "pieces"
+        ).value;
+
+
+    const cartons =
+        document.getElementById(
+            "cartons"
+        ).value;
+
+
+    const qty =
+        document.getElementById(
+            "qty"
+        ).value;
+
+
+    const writer =
+        document.getElementById(
+            "writer"
+        ).value;
 
 
     if (!barcode) {
 
         alert(
-            "Please scan the barcode first."
+            "Please scan the barcode."
         );
 
         return;
@@ -854,7 +1188,7 @@ function checkInventory() {
     if (!batch) {
 
         alert(
-            "Please enter the Batch Number."
+            "Please enter Batch Number."
         );
 
         return;
@@ -862,94 +1196,224 @@ function checkInventory() {
     }
 
 
-    /*
-       Cloudflare Inventory connection
-       will be added next.
+    if (!expiry) {
 
-       The future logic will be:
+        alert(
+            "Please CHECK INVENTORY first."
+        );
 
-       Barcode + Batch Number
-              ↓
-       Search Inventory
-              ↓
-       Find all matching expiry dates
-              ↓
-       Select the earliest expiry date
-              ↓
-       Put the date into #expiry
-    */
+        return;
+
+    }
 
 
-    alert(
-        "Barcode and Batch Number received.\n\n" +
-        "Cloudflare Inventory connection will be added next."
+    if (!pieces &&
+        !cartons &&
+        !qty) {
+
+        alert(
+            "Please enter quantity."
+        );
+
+        return;
+
+    }
+
+
+    if (!writer) {
+
+        alert(
+            "Please select Written By."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "submitButton"
+        );
+
+
+    button.innerText =
+        "⏳ SUBMITTING...";
+
+    button.classList.add(
+        "loading"
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                SCRIPT_URL,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            action:
+                                "stockOut",
+
+                            barcode:
+                                barcode,
+
+                            batch:
+                                batch,
+
+                            expiry:
+                                expiry,
+
+                            pieces:
+                                pieces,
+
+                            cartons:
+                                cartons,
+
+                            qty:
+                                qty,
+
+                            writer:
+                                writer
+
+                        })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!result.success) {
+
+            alert(
+                "❌ " +
+                result.message
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "✅ Stock OUT submitted successfully!"
+        );
+
+
+        resetForm();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+
+        alert(
+            "❌ Unable to submit data."
+        );
+
+    }
+
+
+    button.innerText =
+        "✅ SUBMIT";
+
+    button.classList.remove(
+        "loading"
     );
 
 }
 
 
-/* =========================
-   SUBMIT
-========================= */
-
-function submitData() {
-
-    alert(
-        "Cloudflare connection will be added next."
-    );
-
-}
-
-
-/* =========================
+/* =====================================================
    RESET
-========================= */
+===================================================== */
 
 function resetForm() {
 
-
-    document.getElementById("barcode")
-        .value = "";
-
-
-    document.getElementById("batch")
-        .value = "";
+    document.getElementById(
+        "barcode"
+    ).value = "";
 
 
-    document.getElementById("pieces")
-        .value = "";
+    document.getElementById(
+        "batch"
+    ).value = "";
 
 
-    document.getElementById("cartons")
-        .value = "";
+    document.getElementById(
+        "expiry"
+    ).value = "";
 
 
-    document.getElementById("qty")
-        .value = "";
+    document.getElementById(
+        "pieces"
+    ).value = "";
 
 
-    document.getElementById("writer")
-        .value = "";
+    document.getElementById(
+        "cartons"
+    ).value = "";
 
 
-    document.getElementById("productName")
-        .innerText = "";
+    document.getElementById(
+        "qty"
+    ).value = "";
 
 
-    document.getElementById("expiry")
-        .value = "";
+    document.getElementById(
+        "writer"
+    ).value = "";
 
 
-    document.getElementById("productBox")
-        .classList.add("hidden");
+    document.getElementById(
+        "productName"
+    ).innerText = "";
 
 
-    document.getElementById("recommendedBox")
-        .classList.add("hidden");
+    document.getElementById(
+        "productBox"
+    ).classList.add(
+        "hidden"
+    );
 
 
-    document.getElementById("scanStatus")
-        .innerText =
+    document.getElementById(
+        "expiryBox"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "message"
+    ).className =
+        "message";
+
+
+    document.getElementById(
+        "message"
+    ).innerText = "";
+
+
+    document.getElementById(
+        "scanStatus"
+    ).innerText =
         "Press START SCAN to begin";
 
 
