@@ -94,23 +94,17 @@ body {
     transition: .2s;
 }
 
-/* OUT */
-
 .mode .out-active {
     background: #dc3545;
     color: white;
     box-shadow: 0 5px 12px rgba(220,53,69,.30);
 }
 
-/* IN */
-
 .mode .in-active {
     background: #198754;
     color: white;
     box-shadow: 0 5px 12px rgba(25,135,84,.30);
 }
-
-/* INACTIVE */
 
 .mode .inactive {
     background: #e9ecef;
@@ -227,6 +221,14 @@ select:focus {
     color: #6b5500;
 }
 
+/* IN EXPIRY */
+
+#expiry.in-expiry {
+    background: white;
+    border: 2px solid #198754;
+    color: #222;
+}
+
 /* =========================
    PRODUCT
 ========================= */
@@ -325,7 +327,7 @@ select:focus {
 ========================= */
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* =========================
@@ -367,6 +369,7 @@ select:focus {
 
     </div>
 
+
     <!-- MODE -->
 
     <div class="card">
@@ -399,6 +402,7 @@ select:focus {
 
     </div>
 
+
     <!-- SCANNER -->
 
     <div class="card">
@@ -428,6 +432,7 @@ select:focus {
 
     </div>
 
+
     <!-- PRODUCT -->
 
     <div class="card">
@@ -435,6 +440,7 @@ select:focus {
         <div class="title">
             Product Information
         </div>
+
 
         <!-- BARCODE -->
 
@@ -451,6 +457,7 @@ select:focus {
 
         </div>
 
+
         <!-- BATCH -->
 
         <div class="form-group">
@@ -465,7 +472,8 @@ select:focus {
 
         </div>
 
-        <!-- CHECK -->
+
+        <!-- CHECK INVENTORY -->
 
         <button
             id="checkButton"
@@ -475,6 +483,7 @@ select:focus {
             🔍 CHECK INVENTORY
 
         </button>
+
 
         <!-- PRODUCT -->
 
@@ -494,13 +503,14 @@ select:focus {
 
         </div>
 
+
         <!-- EXPIRY -->
 
         <div
             id="expiryBox"
             class="expiry-box hidden">
 
-            <label>
+            <label id="expiryLabel">
                 ⭐ RECOMMENDED EXPIRY DATE
             </label>
 
@@ -512,6 +522,7 @@ select:focus {
 
         </div>
 
+
         <!-- MESSAGE -->
 
         <div
@@ -522,6 +533,7 @@ select:focus {
 
     </div>
 
+
     <!-- QUANTITY -->
 
     <div class="card">
@@ -529,6 +541,7 @@ select:focus {
         <div class="title">
             Quantity
         </div>
+
 
         <div class="form-group">
 
@@ -544,6 +557,7 @@ select:focus {
 
         </div>
 
+
         <div class="form-group">
 
             <label>
@@ -557,6 +571,7 @@ select:focus {
                 placeholder="Enter cartons">
 
         </div>
+
 
         <div class="form-group">
 
@@ -575,6 +590,7 @@ select:focus {
 
     </div>
 
+
     <!-- EMPLOYEE -->
 
     <div class="card">
@@ -582,6 +598,7 @@ select:focus {
         <div class="title">
             Written By
         </div>
+
 
         <select id="writer">
 
@@ -611,6 +628,7 @@ select:focus {
 
         </select>
 
+
         <button
             id="submitButton"
             class="submit"
@@ -619,6 +637,7 @@ select:focus {
             ✅ SUBMIT
 
         </button>
+
 
         <button
             class="clear"
@@ -631,6 +650,7 @@ select:focus {
     </div>
 
 </div>
+
 
 <script>
 
@@ -659,6 +679,25 @@ function selectMode(mode) {
     const inBtn =
         document.getElementById("inBtn");
 
+    const checkButton =
+        document.getElementById("checkButton");
+
+    const expiryBox =
+        document.getElementById("expiryBox");
+
+    const expiry =
+        document.getElementById("expiry");
+
+    const expiryLabel =
+        document.getElementById("expiryLabel");
+
+    const productBox =
+        document.getElementById("productBox");
+
+
+    /* =========================
+       OUT MODE
+    ========================= */
 
     if (mode === "OUT") {
 
@@ -668,13 +707,49 @@ function selectMode(mode) {
         inBtn.className =
             "inactive";
 
-        document.getElementById(
-            "scanStatus"
-        ).innerText =
-            "OUT mode selected";
+
+        checkButton.classList.remove(
+            "hidden"
+        );
+
+
+        expiry.readOnly = true;
+
+        expiry.classList.remove(
+            "in-expiry"
+        );
+
+
+        expiryLabel.innerText =
+            "⭐ RECOMMENDED EXPIRY DATE";
+
+
+        if (
+            document.getElementById(
+                "barcode"
+            ).value
+        ) {
+
+            document.getElementById(
+                "scanStatus"
+            ).innerText =
+                "OUT mode selected";
+
+        } else {
+
+            document.getElementById(
+                "scanStatus"
+            ).innerText =
+                "OUT mode selected";
+
+        }
 
     }
 
+
+    /* =========================
+       IN MODE
+    ========================= */
 
     if (mode === "IN") {
 
@@ -684,10 +759,57 @@ function selectMode(mode) {
         inBtn.className =
             "in-active";
 
+
+        /*
+           IN does NOT need
+           CHECK INVENTORY
+        */
+
+        checkButton.classList.add(
+            "hidden"
+        );
+
+
+        /*
+           IN expiry is manual
+        */
+
+        expiry.readOnly = false;
+
+        expiry.classList.add(
+            "in-expiry"
+        );
+
+
+        expiryLabel.innerText =
+            "📅 EXPIRY DATE";
+
+
+        expiry.placeholder =
+            "DD/MM/YYYY";
+
+
+        /*
+           Product information
+           is not needed for IN
+        */
+
+        productBox.classList.add(
+            "hidden"
+        );
+
+
+        document.getElementById(
+            "expiryBox"
+        ).classList.remove(
+            "hidden"
+        );
+
+
         document.getElementById(
             "scanStatus"
         ).innerText =
-            "IN function is under development";
+            "IN mode selected";
 
     }
 
@@ -704,17 +826,6 @@ let scanned = false;
 
 
 function startScanner() {
-
-    if (currentMode === "IN") {
-
-        alert(
-            "IN function is under development."
-        );
-
-        return;
-
-    }
-
 
     if (scannerRunning) {
 
@@ -791,7 +902,6 @@ function startScanner() {
         locate: true
 
     }, function(error) {
-
 
         if (error) {
 
@@ -886,6 +996,23 @@ Quagga.onDetected(
             "batch"
         ).focus();
 
+
+        /*
+           IN mode:
+           after scanning, user enters
+           Batch → Expiry
+        */
+
+        if (currentMode === "IN") {
+
+            document.getElementById(
+                "expiryBox"
+            ).classList.remove(
+                "hidden"
+            );
+
+        }
+
     }
 );
 
@@ -894,14 +1021,18 @@ Quagga.onDetected(
    DATE FORMAT
 ===================================================== */
 
+
 /*
-   Convert:
+   Backend:
    YYYY-MM-DD
-   to
+
+   Website:
    DD/MM/YYYY
 */
 
-function formatExpiryDate(dateString) {
+function formatExpiryDate(
+    dateString
+) {
 
     if (!dateString) {
 
@@ -910,43 +1041,74 @@ function formatExpiryDate(dateString) {
     }
 
 
-    const parts =
-        dateString.split("-");
+    /*
+       Already DD/MM/YYYY
+    */
+
+    if (
+        /^\d{1,2}\/\d{1,2}\/\d{4}$/
+            .test(dateString)
+    ) {
+
+        const parts =
+            dateString.split("/");
 
 
-    if (parts.length !== 3) {
+        return (
 
-        return dateString;
+            String(parts[0]).padStart(2, "0") +
+            "/" +
+            String(parts[1]).padStart(2, "0") +
+            "/" +
+            parts[2]
+
+        );
 
     }
 
 
-    const year = parts[0];
-    const month = parts[1];
-    const day = parts[2];
+    /*
+       YYYY-MM-DD
+    */
+
+    if (
+        /^\d{4}-\d{2}-\d{2}$/
+            .test(dateString)
+    ) {
+
+        const parts =
+            dateString.split("-");
 
 
-    return (
-        day +
-        "/" +
-        month +
-        "/" +
-        year
-    );
+        return (
+
+            parts[2] +
+            "/" +
+            parts[1] +
+            "/" +
+            parts[0]
+
+        );
+
+    }
+
+
+    return dateString;
 
 }
 
 
 /*
-   Convert:
+   Website:
    DD/MM/YYYY
-   back to
-   YYYY-MM-DD
 
-   This keeps the backend format unchanged.
+   Backend:
+   YYYY-MM-DD
 */
 
-function convertExpiryForSubmit(dateString) {
+function convertExpiryForSubmit(
+    dateString
+) {
 
     if (!dateString) {
 
@@ -955,29 +1117,63 @@ function convertExpiryForSubmit(dateString) {
     }
 
 
-    const parts =
-        dateString.split("/");
+    const text =
+        dateString.trim();
 
 
-    if (parts.length !== 3) {
+    /*
+       DD/MM/YYYY
+    */
 
-        return dateString;
+    if (
+        /^\d{1,2}\/\d{1,2}\/\d{4}$/
+            .test(text)
+    ) {
+
+        const parts =
+            text.split("/");
+
+
+        const day =
+            String(parts[0]).padStart(2, "0");
+
+
+        const month =
+            String(parts[1]).padStart(2, "0");
+
+
+        const year =
+            parts[2];
+
+
+        return (
+
+            year +
+            "-" +
+            month +
+            "-" +
+            day
+
+        );
 
     }
 
 
-    const day = parts[0];
-    const month = parts[1];
-    const year = parts[2];
+    /*
+       Already YYYY-MM-DD
+    */
+
+    if (
+        /^\d{4}-\d{2}-\d{2}$/
+            .test(text)
+    ) {
+
+        return text;
+
+    }
 
 
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
-    );
+    return "";
 
 }
 
@@ -997,7 +1193,9 @@ function showMessage(
         );
 
 
-    message.innerText = text;
+    message.innerText =
+        text;
+
 
     message.className =
         "message " + type;
@@ -1007,9 +1205,22 @@ function showMessage(
 
 /* =====================================================
    CHECK INVENTORY
+   OUT ONLY
 ===================================================== */
 
 async function checkInventory() {
+
+    /*
+       IN mode should never
+       check inventory
+    */
+
+    if (currentMode === "IN") {
+
+        return;
+
+    }
+
 
     const barcode =
         document.getElementById(
@@ -1042,9 +1253,11 @@ async function checkInventory() {
             "error"
         );
 
+
         document.getElementById(
             "batch"
         ).focus();
+
 
         return;
 
@@ -1059,6 +1272,7 @@ async function checkInventory() {
 
     button.innerText =
         "⏳ CHECKING...";
+
 
     button.classList.add(
         "loading"
@@ -1192,6 +1406,7 @@ async function checkInventory() {
     button.innerText =
         "🔍 CHECK INVENTORY";
 
+
     button.classList.remove(
         "loading"
     );
@@ -1216,14 +1431,6 @@ async function submitData() {
             "batch"
         ).value.trim();
 
-
-    /*
-       Display format:
-       DD/MM/YYYY
-
-       Backend format:
-       YYYY-MM-DD
-    */
 
     const expiryDisplay =
         document.getElementById(
@@ -1261,6 +1468,10 @@ async function submitData() {
         ).value;
 
 
+    /* =========================
+       BASIC VALIDATION
+    ========================= */
+
     if (!barcode) {
 
         alert(
@@ -1283,10 +1494,42 @@ async function submitData() {
     }
 
 
+    /* =========================
+       EXPIRY
+    ========================= */
+
     if (!expiry) {
 
+        if (currentMode === "IN") {
+
+            alert(
+                "Please enter Expiry Date in DD/MM/YYYY format."
+            );
+
+        } else {
+
+            alert(
+                "Please CHECK INVENTORY first."
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    /*
+       Validate date format
+    */
+
+    if (
+        !/^\d{4}-\d{2}-\d{2}$/
+            .test(expiry)
+    ) {
+
         alert(
-            "Please CHECK INVENTORY first."
+            "Invalid Expiry Date. Please use DD/MM/YYYY."
         );
 
         return;
@@ -1294,9 +1537,15 @@ async function submitData() {
     }
 
 
-    if (!pieces &&
+    /* =========================
+       QUANTITY
+    ========================= */
+
+    if (
+        !pieces &&
         !cartons &&
-        !qty) {
+        !qty
+    ) {
 
         alert(
             "Please enter quantity."
@@ -1306,6 +1555,10 @@ async function submitData() {
 
     }
 
+
+    /* =========================
+       WRITER
+    ========================= */
 
     if (!writer) {
 
@@ -1327,12 +1580,24 @@ async function submitData() {
     button.innerText =
         "⏳ SUBMITTING...";
 
+
     button.classList.add(
         "loading"
     );
 
 
     try {
+
+        /*
+           Decide action according
+           to selected mode
+        */
+
+        const action =
+            currentMode === "IN"
+                ? "stockIn"
+                : "stockOut";
+
 
         const response =
             await fetch(
@@ -1352,7 +1617,7 @@ async function submitData() {
                         JSON.stringify({
 
                             action:
-                                "stockOut",
+                                action,
 
                             barcode:
                                 barcode,
@@ -1397,9 +1662,23 @@ async function submitData() {
         }
 
 
-        alert(
-            "✅ Stock OUT submitted successfully!"
-        );
+        /* =========================
+           SUCCESS MESSAGE
+        ========================= */
+
+        if (currentMode === "IN") {
+
+            alert(
+                "✅ Stock IN submitted successfully!"
+            );
+
+        } else {
+
+            alert(
+                "✅ Stock OUT submitted successfully!"
+            );
+
+        }
 
 
         resetForm();
@@ -1419,6 +1698,7 @@ async function submitData() {
 
     button.innerText =
         "✅ SUBMIT";
+
 
     button.classList.remove(
         "loading"
@@ -1498,10 +1778,48 @@ function resetForm() {
     ).innerText = "";
 
 
+    /*
+       Reset expiry to OUT state
+    */
+
     document.getElementById(
-        "scanStatus"
+        "expiry"
+    ).readOnly = true;
+
+
+    document.getElementById(
+        "expiry"
+    ).classList.remove(
+        "in-expiry"
+    );
+
+
+    document.getElementById(
+        "expiryLabel"
     ).innerText =
-        "Press START SCAN to begin";
+        "⭐ RECOMMENDED EXPIRY DATE";
+
+
+    /*
+       Keep current mode.
+       If user is IN, IN stays selected.
+    */
+
+    if (currentMode === "IN") {
+
+        document.getElementById(
+            "scanStatus"
+        ).innerText =
+            "IN mode selected";
+
+    } else {
+
+        document.getElementById(
+            "scanStatus"
+        ).innerText =
+            "Press START SCAN to begin";
+
+    }
 
 
     window.scrollTo({
