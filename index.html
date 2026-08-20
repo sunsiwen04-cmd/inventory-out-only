@@ -353,12 +353,9 @@ select:focus {
 
 </head>
 
-
 <body>
 
-
 <div class="container">
-
 
     <!-- HEADER -->
 
@@ -369,7 +366,6 @@ select:focus {
         <p>Stock Movement System</p>
 
     </div>
-
 
     <!-- MODE -->
 
@@ -403,7 +399,6 @@ select:focus {
 
     </div>
 
-
     <!-- SCANNER -->
 
     <div class="card">
@@ -433,7 +428,6 @@ select:focus {
 
     </div>
 
-
     <!-- PRODUCT -->
 
     <div class="card">
@@ -441,7 +435,6 @@ select:focus {
         <div class="title">
             Product Information
         </div>
-
 
         <!-- BARCODE -->
 
@@ -458,7 +451,6 @@ select:focus {
 
         </div>
 
-
         <!-- BATCH -->
 
         <div class="form-group">
@@ -473,7 +465,6 @@ select:focus {
 
         </div>
 
-
         <!-- CHECK -->
 
         <button
@@ -484,7 +475,6 @@ select:focus {
             🔍 CHECK INVENTORY
 
         </button>
-
 
         <!-- PRODUCT -->
 
@@ -504,7 +494,6 @@ select:focus {
 
         </div>
 
-
         <!-- EXPIRY -->
 
         <div
@@ -517,11 +506,11 @@ select:focus {
 
             <input
                 id="expiry"
-                type="date"
+                type="text"
+                placeholder="DD/MM/YYYY"
                 readonly>
 
         </div>
-
 
         <!-- MESSAGE -->
 
@@ -533,7 +522,6 @@ select:focus {
 
     </div>
 
-
     <!-- QUANTITY -->
 
     <div class="card">
@@ -541,7 +529,6 @@ select:focus {
         <div class="title">
             Quantity
         </div>
-
 
         <div class="form-group">
 
@@ -557,7 +544,6 @@ select:focus {
 
         </div>
 
-
         <div class="form-group">
 
             <label>
@@ -571,7 +557,6 @@ select:focus {
                 placeholder="Enter cartons">
 
         </div>
-
 
         <div class="form-group">
 
@@ -590,7 +575,6 @@ select:focus {
 
     </div>
 
-
     <!-- EMPLOYEE -->
 
     <div class="card">
@@ -598,7 +582,6 @@ select:focus {
         <div class="title">
             Written By
         </div>
-
 
         <select id="writer">
 
@@ -628,7 +611,6 @@ select:focus {
 
         </select>
 
-
         <button
             id="submitButton"
             class="submit"
@@ -637,7 +619,6 @@ select:focus {
             ✅ SUBMIT
 
         </button>
-
 
         <button
             class="clear"
@@ -649,9 +630,7 @@ select:focus {
 
     </div>
 
-
 </div>
-
 
 <script>
 
@@ -912,6 +891,98 @@ Quagga.onDetected(
 
 
 /* =====================================================
+   DATE FORMAT
+===================================================== */
+
+/*
+   Convert:
+   YYYY-MM-DD
+   to
+   DD/MM/YYYY
+*/
+
+function formatExpiryDate(dateString) {
+
+    if (!dateString) {
+
+        return "";
+
+    }
+
+
+    const parts =
+        dateString.split("-");
+
+
+    if (parts.length !== 3) {
+
+        return dateString;
+
+    }
+
+
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+
+
+    return (
+        day +
+        "/" +
+        month +
+        "/" +
+        year
+    );
+
+}
+
+
+/*
+   Convert:
+   DD/MM/YYYY
+   back to
+   YYYY-MM-DD
+
+   This keeps the backend format unchanged.
+*/
+
+function convertExpiryForSubmit(dateString) {
+
+    if (!dateString) {
+
+        return "";
+
+    }
+
+
+    const parts =
+        dateString.split("/");
+
+
+    if (parts.length !== 3) {
+
+        return dateString;
+
+    }
+
+
+    const day = parts[0];
+    const month = parts[1];
+    const year = parts[2];
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+/* =====================================================
    MESSAGE
 ===================================================== */
 
@@ -1087,7 +1158,9 @@ async function checkInventory() {
         document.getElementById(
             "expiry"
         ).value =
-            result.expiryDate;
+            formatExpiryDate(
+                result.expiryDate
+            );
 
 
         document.getElementById(
@@ -1144,10 +1217,24 @@ async function submitData() {
         ).value.trim();
 
 
-    const expiry =
+    /*
+       Display format:
+       DD/MM/YYYY
+
+       Backend format:
+       YYYY-MM-DD
+    */
+
+    const expiryDisplay =
         document.getElementById(
             "expiry"
         ).value.trim();
+
+
+    const expiry =
+        convertExpiryForSubmit(
+            expiryDisplay
+        );
 
 
     const pieces =
@@ -1428,7 +1515,6 @@ function resetForm() {
 }
 
 </script>
-
 
 </body>
 
